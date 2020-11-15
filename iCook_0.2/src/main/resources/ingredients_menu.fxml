@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.IngredientMenuController">
+   <children>
+      <VBox layoutX="17.0" layoutY="12.0" prefHeight="370.0" prefWidth="565.0">
+         <children>
+            <Accordion>
+              <panes>
+                  <TitledPane animated="false" text="Proteins">
+                     <content>
+                        <FlowPane fx:id="proteinPane" prefHeight="200.0" prefWidth="200.0" />
+                     </content>
+                  </TitledPane>
+                <TitledPane animated="false" text="Carbohydrates">
+                     <content>
+                        <FlowPane fx:id="carbPane" prefHeight="200.0" prefWidth="200.0" />
+                     </content>
+                </TitledPane>
+                <TitledPane animated="false" text="Veggies">
+                     <content>
+                        <FlowPane fx:id="veggiePane" prefHeight="200.0" prefWidth="200.0" />
+                     </content>
+                </TitledPane>
+                <TitledPane animated="false" text="Sauces">
+                     <content>
+                        <FlowPane fx:id="saucePane" prefHeight="200.0" prefWidth="200.0" />
+                     </content>
+                </TitledPane>
+              </panes>
+            </Accordion>
+            <Button fx:id="displayRecipeButton" mnemonicParsing="false" onAction="#generateRecipesButtonPushed" text="Generate Recipes" />
+            <HBox prefHeight="275.0" prefWidth="565.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Proteins" />
+                        <ListView fx:id="proteinListView" prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Carbohydrates" />
+                        <ListView fx:id="carbListView" prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Vegetables" />
+                        <ListView fx:id="veggieListView" prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Sauces" />
+                        <ListView fx:id="sauceListView" prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
