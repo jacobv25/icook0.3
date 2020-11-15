@@ -1,5 +1,6 @@
 package sample.model;
 //import sample.model.Ingredient;
+//llololol
 
 import javax.lang.model.element.NestingKind;
 import java.io.Serializable;
