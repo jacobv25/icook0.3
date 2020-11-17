@@ -28,42 +28,31 @@ import java.util.ResourceBundle;
 import javafx.stage.Stage;
 import sample.model.*;
 
+import static sample.model.Ingredient.FoodCategory.*;
+
 
 public class IngredientMenuController implements Initializable {
 
-    private static final int NUM_BUTTON_LINES = 5;
-    private static final int BUTTONS_PER_LINE = 3;
-    private static final int MAX_INGREDIENTS = 100;
-    private static final int MAX_RECIPES = 100;
 
     @FXML GridPane grid;
-    @FXML ListView list1 = new ListView();
     @FXML ListView proteinListView;
     @FXML ListView carbListView;
     @FXML ListView veggieListView;
     @FXML ListView sauceListView;
 
-    @FXML TextArea textArea1;
-    String ingredients = "";
-
 
     ArrayList<Recipe> allRecipes;
-    ArrayList<Recipe> possibleRecipes;
     ArrayList<Ingredient> allIngredients;
     ArrayList<Ingredient> proteinIngredients;
     ArrayList<Ingredient> carbIngredients;
     ArrayList<Ingredient> veggieIngredients;
     ArrayList<Ingredient> sauceIngredients;
-    ArrayList<Ingredient> chosenIngredients;
 
     @FXML FlowPane proteinPane;
     @FXML FlowPane carbPane;
     @FXML FlowPane veggiePane;
     @FXML FlowPane saucePane;
 
-    @FXML Button addIngredientButton;
-    @FXML Button displayRecipesButton;
-    @FXML Button updateButton;
 
     @FXML CheckBox checkBox;
 
@@ -73,7 +62,7 @@ public class IngredientMenuController implements Initializable {
      * and update the check boxes and ListViews
      * Function assumes all CheckBoxes and ListViews are empty
      *********************************************************************/
-    public void initDataFromChooseRecipeMenu(List<Ingredient> ingredientList){
+    public void handleCheckBoxes(List<Ingredient> ingredientList){
         //handle check boxes
         HandlerCheckBox.repopulateCheckBoxes(proteinPane, ingredientList);
         HandlerCheckBox.repopulateCheckBoxes(carbPane, ingredientList);
@@ -81,6 +70,28 @@ public class IngredientMenuController implements Initializable {
         HandlerCheckBox.repopulateCheckBoxes(saucePane, ingredientList);
         //update the List views
     }
+
+    public void repopulateTextViews(List<Ingredient> list){
+        for (int i=0; i < list.size(); i++) {
+            if (list.get(i).getCategory() == PROTEIN) {
+//                   System.out.println("Ingredient is a protein !!");
+                proteinListView.getItems().add(list.get(i).getName());
+            }
+            else if (list.get(i).getCategory() == CARB) {
+//                   System.out.println("Ingredient is a carb !!");
+                carbListView.getItems().add(list.get(i).getName());
+            }
+            else if (list.get(i).getCategory() == VEGGIE) {
+//                   System.out.println("Ingredient is a veggie !!");
+                veggieListView.getItems().add(list.get(i).getName());
+            }
+            else if (list.get(i).getCategory() == SAUCE) {
+//                   System.out.println("Ingredient is a sauce !!");
+                sauceListView.getItems().add(list.get(i).getName());
+            }
+        }
+    }
+
 
     /********************************************************
      * When this button is pressed it will change the scene
@@ -105,117 +116,6 @@ public class IngredientMenuController implements Initializable {
         window.show();
 
     }
-
-    private List<String> getIngredientsFromListViews() {
-        List<String> chosenIngredients = new ArrayList<>();
-
-        chosenIngredients.addAll(proteinListView.getItems());
-        chosenIngredients.addAll(carbListView.getItems());
-        chosenIngredients.addAll(veggieListView.getItems());
-        chosenIngredients.addAll(sauceListView.getItems());
-        return chosenIngredients;
-    }
-
-    /*******************************
-     * displays the Recipe to command line
-     * @param event
-     */
-    public void displayRecipeButtonPressed(ActionEvent event) {
-        for(Recipe e: allRecipes){
-            System.out.println(e.toString());
-        }
-    }
-
-    /*********************************
-     Fills Grid full of buttons
-     * @param event
-     *********************************/
-    public void fillGrid(ActionEvent event) {
-        for (int r = 0; r < NUM_BUTTON_LINES; r++) {
-            for (int c = 0; c < BUTTONS_PER_LINE; c++) {
-                int number = NUM_BUTTON_LINES * r + c;
-                Button button = new Button(String.valueOf(number));
-                this.grid.add(button, c, r);
-            }
-        }
-    }
-
-
-    /******************************
-     * STILL IN PROGRESS
-     * Adds ingredient to a list
-     *
-     *******************************/
-    public void updateIngredientListsButtonPushed(ActionEvent event) {
-
-
-        //======== check protein pane =========
-        ObservableList<Node> proteinList = proteinPane.getChildren();
-        for (int i =0; i < proteinList.size(); i++) {
-            CheckBox cb = (CheckBox)proteinList.get(i);
-            if (cb.isSelected()){
-                //First check if ingredient has already been added.
-                if( !proteinListView.getItems().contains(cb.getText())) {
-                    proteinListView.getItems().add(cb.getText());
-                    ChosenIngredients.addToProteinList(cb.getText());
-                }
-            }
-            else {
-                if( proteinListView.getItems().contains(cb.getText())){
-                    proteinListView.getItems().remove(cb.getText());
-                }
-            }
-        }
-        //======== check carb pane =========
-        ObservableList<Node> carbList = carbPane.getChildren();
-        for (int i =0; i < carbList.size(); i++) {
-            CheckBox cb = (CheckBox)carbList.get(i);
-            if (cb.isSelected()){
-                //First check if ingredient has already been added.
-                if(!carbListView.getItems().contains(cb.getText())) {
-                    carbListView.getItems().add(cb.getText());
-                }
-            }
-            else {
-                if( carbListView.getItems().contains(cb.getText())){
-                    carbListView.getItems().remove(cb.getText());
-                }
-            }
-        }
-        //======== check veggie pane =========
-        ObservableList<Node> veggieList = veggiePane.getChildren();
-        for (int i =0; i < veggieList.size(); i++) {
-            CheckBox cb = (CheckBox)veggieList.get(i);
-            if (cb.isSelected()){
-                //First check if ingredient has already been added.
-                if(!veggieListView.getItems().contains(cb.getText())) {
-                    veggieListView.getItems().add(cb.getText());
-                }
-            }
-            else {
-                if( veggieListView.getItems().contains(cb.getText())){
-                    veggieListView.getItems().remove(cb.getText());
-                }
-            }
-        }
-        //======== check Sauce pane =========
-        ObservableList<Node> sauceList = saucePane.getChildren();
-        for (int i =0; i < sauceList.size(); i++) {
-            CheckBox cb = (CheckBox)sauceList.get(i);
-            if (cb.isSelected()){
-                //First check if ingredient has already been added.
-                if(!sauceListView.getItems().contains(cb.getText())) {
-                    sauceListView.getItems().add(cb.getText());
-                }
-            }
-            else {
-                if( sauceListView.getItems().contains(cb.getText())){
-                    sauceListView.getItems().remove(cb.getText());
-                }
-            }
-        }
-    }
-
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

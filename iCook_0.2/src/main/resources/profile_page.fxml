@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ProfilePageController">
+   <children>
+      <Button layoutX="135.0" layoutY="284.0" mnemonicParsing="false" text="log out" />
+      <Button layoutX="274.0" layoutY="284.0" mnemonicParsing="false" text="add ingredients" />
+      <ListView layoutX="408.0" layoutY="46.0" prefHeight="210.0" prefWidth="123.0" />
+      <ListView layoutX="239.0" layoutY="46.0" prefHeight="210.0" prefWidth="123.0" />
+      <Label layoutX="270.0" layoutY="29.0" text="Ingredients" />
+      <Label layoutX="449.0" layoutY="29.0" text="Recipes" />
+      <Label alignment="TOP_LEFT" layoutX="28.0" layoutY="46.0" prefHeight="136.0" prefWidth="169.0">
+         <font>
+            <Font name="Impact" size="20.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

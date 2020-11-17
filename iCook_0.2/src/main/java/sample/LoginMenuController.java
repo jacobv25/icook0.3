@@ -49,6 +49,22 @@ public class LoginMenuController  {
     @FXML private Label loginMessageLabel;
 
 
+    private void changeSceneToProfilePage(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("profile_page.fxml"));
+        Parent parent = loader.load();
+        Scene scene = new Scene(parent);
+
+        //access Controller
+        ProfilePageController controller = loader.getController();
+        //controller.populateProfilePage(getChosenIngredientsList());
+
+        //This line gets the Stage information
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        window.setScene(scene);
+        window.show();
+    }
     /**
      * Clears thr login and password TextFields
      */
@@ -114,6 +130,7 @@ public class LoginMenuController  {
             if(loginSuccess){
 
                 showLoginMessage("Login successful", true);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();

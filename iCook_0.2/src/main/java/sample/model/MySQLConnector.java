@@ -20,6 +20,16 @@ public class MySQLConnector {
         return  connection;
     }
 
+    public static void getUser(String username) throws SQLException {
+
+        Connection connection = getConnection();
+        String sql;
+        PreparedStatement statement;
+
+        //get user who's username matches parameter
+        //sql = "SELECT username, "
+    }
+
     public static void registerUser(String username, String password) throws SQLException {
 
         Connection connection = getConnection();

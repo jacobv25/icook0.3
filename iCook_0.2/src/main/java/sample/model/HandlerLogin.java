@@ -56,7 +56,6 @@ public class HandlerLogin {
 
         //If login failed, LoginFailed Exception will  be thrown
         MySQLConnector.requestLogin(u, p);
-        System.out.println("here4");
         //Otherwise, login was successful, so return true.
         return true;
     }

@@ -52,7 +52,10 @@ public class ChooseRecipeMenuController implements Initializable {
 
         //access Controller
         IngredientMenuController controller = loader.getController();
-        controller.initDataFromChooseRecipeMenu(getChosenIngredientsList());
+        List<Ingredient> ingredientList = getChosenIngredientsList();
+        //call the methods
+        controller.handleCheckBoxes(ingredientList);
+        controller.repopulateTextViews(ingredientList);
 
         //This line gets the Stage information
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();

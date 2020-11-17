@@ -26,6 +26,8 @@ public class HandlerCheckBox {
      * This method gives the check boxes their ability to tell the program
      * when they have been ticked off.
      * @param event
+     * @param pane The pane where the checkbox is located
+     * @param listView When the check-box is ticked, the list view is updated
      */
     public static void handleCheckBoxes(ActionEvent event, FlowPane pane, ListView listView) {
 
