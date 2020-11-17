@@ -8,7 +8,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.LoginMenuController">
    <children>
@@ -25,11 +24,7 @@
                   <TextField fx:id="usernameTextField" layoutX="82.0" layoutY="82.0" prefHeight="25.0" prefWidth="154.0" />
                   <PasswordField fx:id="passwordTextField" layoutX="82.0" layoutY="137.0" prefHeight="25.0" prefWidth="154.0" />
                   <Label fx:id="errorMessageLabel" alignment="CENTER" layoutX="15.0" layoutY="179.0" prefHeight="17.0" prefWidth="242.0" textFill="RED" />
-                  <Label fx:id="loginMessageLabel" layoutX="114.0" layoutY="179.0" text="Login Success" textFill="#02bc0e" visible="false">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
+                  <Label fx:id="loginMessageLabel" alignment="TOP_CENTER" layoutX="41.0" layoutY="171.0" prefHeight="50.0" prefWidth="191.0" textAlignment="CENTER" textFill="#02bc0e" />
                   <Button fx:id="requestLoginButton" layoutX="14.0" layoutY="220.0" mnemonicParsing="false" onAction="#buttonPushed" prefWidth="100.0" style="-: ;" text="Login" />
                   <Button fx:id="guestLoginButton" layoutX="86.0" layoutY="282.0" mnemonicParsing="false" onAction="#buttonPushed" prefWidth="100.0" text="Login as guest" />
                   <Button fx:id="registerButton" layoutX="172.0" layoutY="220.0" mnemonicParsing="false" onAction="#buttonPushed" prefWidth="100.0" text="Register" />

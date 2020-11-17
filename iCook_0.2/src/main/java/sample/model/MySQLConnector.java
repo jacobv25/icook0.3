@@ -39,20 +39,21 @@ public class MySQLConnector {
     public static ResultSet requestLogin(String u, String p) throws SQLException, LoginFailedException{
 
         Connection connection = getConnection();
-
+        System.out.println("here");
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
-
+        System.out.println("here2");
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, u);
         statement.setString(2, p);
         ResultSet resultSet = statement.executeQuery();
-
+        System.out.println("here3");
         if(!resultSet.next()){
             System.out.println("login failed");
             //Login failed. Throw exception
             throw new LoginFailedException();
         }
         else {
+            System.out.println("success...");
             //Login success. Return resultSet to retrieve data
             return resultSet;
         }

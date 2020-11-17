@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sample.model.CryptographerAES;
 import sample.model.HandlerLogin;
@@ -24,7 +25,11 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ResourceBundle;
 
-public class LoginMenuController implements Initializable {
+/*****************************************************
+ * Class: LoginMenuController
+ * Description: This class is the controller for login_menu.xml
+ *****************************************************/
+public class LoginMenuController  {
 
     private final String DEFAULT_KEY = "123456789abcdefg";
     private final int MIN_PASSWORD_LENGTH = 6;
@@ -43,26 +48,27 @@ public class LoginMenuController implements Initializable {
     @FXML private Label errorMessageLabel;
     @FXML private Label loginMessageLabel;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-//        try {
-//            logoLoginImageView = new ImageView(getClass().getClassLoader().getResources("/images/icook_login_logo.png").toString());
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }
 
+    /**
+     * Clears thr login and password TextFields
+     */
     private void clearTextFields(){
         usernameTextField.clear();
         passwordTextField.clear();
     }
 
+    /**
+     * Checks the event for which button was pressed, then calls
+     * the approtiate methods that configure the login menu
+     * @param event
+     * @throws SQLException
+     * @throws IOException
+     */
     public void buttonPushed(ActionEvent event) throws SQLException, IOException {
 
 
         if(event.getSource() == requestLoginButton){
-            hideErrorMessage();
+            hideLoginMessage();
             requestLoginButtonPushed();
         }
         else if(event.getSource() == registerButton ||
@@ -70,7 +76,7 @@ public class LoginMenuController implements Initializable {
             registerButtonPushed(event);
         }
         else if(event.getSource() == cancelRegisterButton){
-            hideErrorMessage();
+            hideLoginMessage();
             hideRegisterMenuButtons();
             showLoginMenuButtons();
             clearTextFields();
@@ -90,6 +96,10 @@ public class LoginMenuController implements Initializable {
 
     }
 
+    /**
+     * When loginButton is pushed, the data from the two TextFields, usernameTextField and passwordTextField
+     * is collected and passed to a Handler object and anc check to see if access is granted.
+     */
     private void requestLoginButtonPushed(){
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
@@ -98,27 +108,35 @@ public class LoginMenuController implements Initializable {
             //send encrypted password and see if it matches
             CryptographerAES aes = new CryptographerAES(DEFAULT_KEY);
             loginSuccess =  HandlerLogin.getHandler().requestLogin(username, aes.encrypt(password));
-            System.out.println("success="+loginSuccess);
+            //===== The code below is how I think Dr. Fan wants is done but when I try this way, correct username and passwords get rejected =====
+            //HandlerLogin handler = HandlerLogin.getHandler(username, password);
+            //loginSuccess = handler.requestLogin();
             if(loginSuccess){
-                System.out.println("login success!");
-                loginMessageLabel.setVisible(true);
-                hideErrorMessage();
+
+                showLoginMessage("Login successful", true);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (LoginFailedException e) {
-            displayErrorMessage(e.getMessage());
+            showLoginMessage(e.getMessage(), false);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * The event is checked to see which button was pushed.
+     * IF registerButton was pushed, change the menu
+     * IF createAccountButton was pushed, attempt to create an account
+     * @param event
+     * @throws SQLException
+     */
     private void registerButtonPushed(ActionEvent event) throws SQLException {
 
         if(event.getSource() == registerButton){
             clearTextFields();
             hideLoginMenuButtons();
-            hideErrorMessage();
+            hideLoginMessage();
             showRegisterMenuButtons();
         }
         else if (event.getSource() == createAccountButton) {
@@ -128,12 +146,13 @@ public class LoginMenuController implements Initializable {
             String password = passwordTextField.getText();
             System.out.println("username=" +username);
             System.out.println("password=" +password);
+            //==== I wonder if the code below should go inside HandlerLogin ====
             try {
                 if (password.length() < MIN_PASSWORD_LENGTH){
-                    displayErrorMessage("Password too short.");
+                    showLoginMessage("Password too short.", false);
                 }
                 else if (username.equals("") || password.equals("")) {
-                    displayErrorMessage("Invalid entry. Try again");
+                    showLoginMessage("Invalid entry. Try again", false);
                 } else {
                     //set all lowercase so caps doesn't matter when entering username
                     username = username.toLowerCase();
@@ -144,25 +163,37 @@ public class LoginMenuController implements Initializable {
                     hideRegisterMenuButtons();
                     showLoginMenuButtons();
                     clearTextFields();
+                    showLoginMessage("Registration\nsuccessful!", true);
                 }
             }
             catch (SQLIntegrityConstraintViolationException e){
                 e.printStackTrace();
-                displayErrorMessage("Username already exists.");
+                showLoginMessage("Username already exists.", false);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
+    /**
+     * Displays a message informing the user the result of the action.
+     * @param msg the message to be shown
+     * @param success if the request was approved or not
+     */
+    private void showLoginMessage(String msg, boolean success){
+        loginMessageLabel.setVisible(true);
+        loginMessageLabel.setText(msg);
+        if (success){
+            loginMessageLabel.setTextFill(Color.GREEN);
+        }
+        else { loginMessageLabel.setTextFill(Color.RED); }
+    }
 
-    private void displayErrorMessage(String msg){
-        errorMessageLabel.setVisible(true);
-        errorMessageLabel.setText(msg);
+
+    private void hideLoginMessage(){
+        loginMessageLabel.setVisible(false);
     }
-    private void hideErrorMessage(){
-        errorMessageLabel.setVisible(false);
-    }
+
 
     private void showLoginMenuButtons(){
         requestLoginButton.setVisible(true);

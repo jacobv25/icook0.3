@@ -14,6 +14,10 @@ import java.util.List;
 
 import static sample.model.Ingredient.FoodCategory.*;
 
+/**************************************************************************
+ * This class handles the check boxes in IngredientMenuController.java
+ * It intilizes
+ ***************************************************************************/
 public class HandlerCheckBox {
 
 
