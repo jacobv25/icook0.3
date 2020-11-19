@@ -6,29 +6,20 @@ public class Ingredient implements Serializable {
 
     public enum FoodCategory { PROTEIN, CARB, VEGGIE, SAUCE};
 
-    public static final int RESET_I = 1;//the lowest id
-    private static int cur_idI = RESET_I;
-    private final int idI;
+    //public static final int RESET_I = 1;//the lowest id
+    //private static int cur_idI = RESET_I;
+    private String idI;
     private String idR;
     private String name;
     private String amount;
     private FoodCategory category;
 
-    public Ingredient(String idR, String name, String amount, FoodCategory category) {
-        this.idI = cur_idI++;
-        //Ingredient.cur_idI++;
+    public Ingredient(String idI, String idR, String name, String amount, FoodCategory category) {
+        this.idI = idI;
         this.idR = idR;
         this.name = name;
         this.amount = amount;
         this.category = category;
-    }
-
-    public Ingredient(){
-        this.idI = cur_idI++;
-        //Ingredient.cur_idI++;
-        //System.out.println("INGREDIENT CREATED!");
-        //System.out.println("idI=" + idI);
-        //System.out.println("curID=" + cur_idI);
     }
 
     @Override
@@ -42,24 +33,20 @@ public class Ingredient implements Serializable {
                 '}';
     }
 
+    public String getIdI() {
+        return idI;
+    }
+
+    public void setIdI(String idI) {
+        this.idI = idI;
+    }
+
     public FoodCategory getCategory() {
         return category;
     }
 
-    public static void setCur_idI(int cur_idI) {
-        Ingredient.cur_idI = cur_idI;
-    }
-
-    public static int getCur_idI() {
-        return cur_idI;
-    }
-
-    public static void resetCur_idI() {
-        Ingredient.cur_idI = RESET_I;
-    }
-
-    public int getIdI() {
-        return idI;
+    public void setCategory(FoodCategory category) {
+        this.category = category;
     }
 
     public String getIdR() {

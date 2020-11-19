@@ -25,11 +25,12 @@ public class HandlerCheckBox {
      * This method is called during initialization.
      * This method gives the check boxes their ability to tell the program
      * when they have been ticked off.
+     * Also calls the MySQLConnector save and delete ingredient functions.
      * @param event
      * @param pane The pane where the checkbox is located
      * @param listView When the check-box is ticked, the list view is updated
      */
-    public static void handleCheckBoxes(ActionEvent event, FlowPane pane, ListView listView) {
+    public static void handleCheckBoxes(ActionEvent event, FlowPane pane, ListView listView){
 
         CheckBox cb = (CheckBox) event.getSource();
 
@@ -47,6 +48,15 @@ public class HandlerCheckBox {
                 } else if (pane.getId().equals("saucePane")) {
                     ChosenIngredients.addToSauceList(cb.getText());
                 }
+                //IF user is logged in,
+                //save the ingredient
+                if(HandlerLogin.getIsUserLoggedIn()){
+                    try {
+                        MySQLConnector.saveUserIngredient(cb.getText());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         else {
@@ -61,6 +71,15 @@ public class HandlerCheckBox {
                 ChosenIngredients.removeToVeggieList(cb.getText());
             } else if (pane.getId().equals("saucePane")) {
                 ChosenIngredients.removeToSauceList(cb.getText());
+            }
+            //IF user is logged in,
+            //delete the ingredient
+            if(HandlerLogin.getIsUserLoggedIn()){
+                try {
+                    MySQLConnector.deleteUserIngredient(cb.getText());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

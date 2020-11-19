@@ -19,6 +19,7 @@ import sample.model.LoginFailedException;
 import sample.model.MySQLConnector;
 
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -57,7 +58,7 @@ public class LoginMenuController  {
 
         //access Controller
         ProfilePageController controller = loader.getController();
-        //controller.populateProfilePage(getChosenIngredientsList());
+        controller.populateProfilePage();
 
         //This line gets the Stage information
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -85,7 +86,7 @@ public class LoginMenuController  {
 
         if(event.getSource() == requestLoginButton){
             hideLoginMessage();
-            requestLoginButtonPushed();
+            requestLoginButtonPushed(event);
         }
         else if(event.getSource() == registerButton ||
                 event.getSource() == createAccountButton){
@@ -98,6 +99,9 @@ public class LoginMenuController  {
             clearTextFields();
         }
         else if(event.getSource() == guestLoginButton){
+            //Set logged in flag to false
+            HandlerLogin.setIsUserLoggedIn(false);
+            //Load scene
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("ingredients_menu.fxml"));
             Parent parent = loader.load();
@@ -116,7 +120,7 @@ public class LoginMenuController  {
      * When loginButton is pushed, the data from the two TextFields, usernameTextField and passwordTextField
      * is collected and passed to a Handler object and anc check to see if access is granted.
      */
-    private void requestLoginButtonPushed(){
+    private void requestLoginButtonPushed(ActionEvent event){
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
         boolean loginSuccess;
@@ -130,7 +134,7 @@ public class LoginMenuController  {
             if(loginSuccess){
 
                 showLoginMessage("Login successful", true);
-
+                changeSceneToProfilePage(event);
             }
         } catch (SQLException e) {
             e.printStackTrace();

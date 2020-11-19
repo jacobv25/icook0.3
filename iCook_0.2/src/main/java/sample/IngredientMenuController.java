@@ -9,10 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 
@@ -22,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Timer;
 
 //import main.java.sample.model.Recipe;
 //import main.java.sample.model.Ingredient;
@@ -34,28 +32,34 @@ import static sample.model.Ingredient.FoodCategory.*;
 public class IngredientMenuController implements Initializable {
 
 
-    @FXML GridPane grid;
-    @FXML ListView proteinListView;
-    @FXML ListView carbListView;
-    @FXML ListView veggieListView;
-    @FXML ListView sauceListView;
+    @FXML private ListView proteinListView;
+    @FXML private ListView carbListView;
+    @FXML private ListView veggieListView;
+    @FXML private ListView sauceListView;
 
+    private ArrayList<Recipe> allRecipes;
+    private ArrayList<Ingredient> allIngredients;
+    private ArrayList<Ingredient> proteinIngredients;
+    private ArrayList<Ingredient> carbIngredients;
+    private ArrayList<Ingredient> veggieIngredients;
+    private ArrayList<Ingredient> sauceIngredients;
 
-    ArrayList<Recipe> allRecipes;
-    ArrayList<Ingredient> allIngredients;
-    ArrayList<Ingredient> proteinIngredients;
-    ArrayList<Ingredient> carbIngredients;
-    ArrayList<Ingredient> veggieIngredients;
-    ArrayList<Ingredient> sauceIngredients;
+    @FXML private FlowPane proteinPane;
+    @FXML private FlowPane carbPane;
+    @FXML private FlowPane veggiePane;
+    @FXML private FlowPane saucePane;
 
-    @FXML FlowPane proteinPane;
-    @FXML FlowPane carbPane;
-    @FXML FlowPane veggiePane;
-    @FXML FlowPane saucePane;
+    @FXML private CheckBox checkBox;
 
+    @FXML private Label saveLabel;
 
-    @FXML CheckBox checkBox;
+    public void saveIngredients() throws SQLException {
 
+        if(HandlerLogin.getIsUserLoggedIn() == true){
+            MySQLConnector.saveUserIngredients();
+            saveLabel.setText("SAVED!");
+        }
+    }
 
     /*********************************************************************
      * Get the chosen ingredient list back from ChooseRecipeMenuController
@@ -152,56 +156,57 @@ public class IngredientMenuController implements Initializable {
             }
         }
         //========= adding ingredients to correct Tile Pane =============
-        checkBox = null;
-        for (Ingredient item : proteinIngredients) {
-            checkBox = new CheckBox(item.getName());
-            //Set each check box's On Action Method
-            checkBox.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    //handleProteinCheckBoxes(event);
-                    System.out.println("event!");
-                    CheckBox test = (CheckBox) event.getSource();
-                    System.out.println("checked?=" + test.isSelected());
-                    HandlerCheckBox.handleCheckBoxes(event, proteinPane, proteinListView);
-                }
-            });
-            System.out.println("Added?=" + proteinPane.getChildren().add(checkBox));
-        }
-        for (Ingredient item : carbIngredients) {
-            checkBox = new CheckBox(item.getName());
-            //Set each check box's On Action Method
-            checkBox.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    HandlerCheckBox.handleCheckBoxes(event, carbPane, carbListView);
-                }
-            });
-            System.out.println("Added?=" + carbPane.getChildren().add(checkBox));
-        }
-        for (Ingredient item : veggieIngredients) {
-            checkBox = new CheckBox(item.getName());
-            //Set each check box's On Action Method
-            checkBox.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    HandlerCheckBox.handleCheckBoxes(event, veggiePane, veggieListView);
-                }
-            });
-            System.out.println("Added?=" + veggiePane.getChildren().add(checkBox));
-        }
-        for (Ingredient item : sauceIngredients) {
-            checkBox = new CheckBox(item.getName());
-            //Set each check box's On Action Method
-            checkBox.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    HandlerCheckBox.handleCheckBoxes(event, saucePane, sauceListView);
-                }
-            });
-            System.out.println("Added?=" + saucePane.getChildren().add(checkBox));
-        }
-    }
+            checkBox = null;
+            for (Ingredient item : proteinIngredients) {
+                checkBox = new CheckBox(item.getName());
+                //Set each check box's On Action Method
+                checkBox.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        //handleProteinCheckBoxes(event);
+                        System.out.println("event!");
+                        CheckBox test = (CheckBox) event.getSource();
+                        System.out.println("checked?=" + test.isSelected());
+                        HandlerCheckBox.handleCheckBoxes(event, proteinPane, proteinListView);
+                    }
+                });
+                System.out.println("Added?=" + proteinPane.getChildren().add(checkBox));
+            }
+            for (Ingredient item : carbIngredients) {
+                checkBox = new CheckBox(item.getName());
+                //Set each check box's On Action Method
+                checkBox.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        HandlerCheckBox.handleCheckBoxes(event, carbPane, carbListView);
+                    }
+                });
+                System.out.println("Added?=" + carbPane.getChildren().add(checkBox));
+            }
+            for (Ingredient item : veggieIngredients) {
+                checkBox = new CheckBox(item.getName());
+                //Set each check box's On Action Method
+                checkBox.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        HandlerCheckBox.handleCheckBoxes(event, veggiePane, veggieListView);
+                    }
+                });
+                System.out.println("Added?=" + veggiePane.getChildren().add(checkBox));
+            }
+            for (Ingredient item : sauceIngredients) {
+                checkBox = new CheckBox(item.getName());
+                //Set each check box's On Action Method
+                checkBox.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        HandlerCheckBox.handleCheckBoxes(event, saucePane, sauceListView);
 
+                    }
+                });
+                System.out.println("Added?=" + saucePane.getChildren().add(checkBox));
+            }
+
+        }
 
 }

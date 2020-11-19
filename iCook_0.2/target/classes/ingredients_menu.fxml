@@ -65,6 +65,8 @@
                         <ListView fx:id="sauceListView" prefHeight="200.0" prefWidth="200.0" />
                      </children>
                   </VBox>
+                  <Button fx:id="saveIngredientsButton" mnemonicParsing="false" onAction="#saveIngredients" text="Save Ingredients" />
+                  <Label fx:id="saveLabel" prefHeight="25.0" prefWidth="62.0" textFill="#00bc00" />
                </children>
             </HBox>
          </children>

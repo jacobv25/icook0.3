@@ -20,16 +20,151 @@ public class MySQLConnector {
         return  connection;
     }
 
-    public static void getUser(String username) throws SQLException {
+    /*************************************************************
+     * Used for Save Ingredient Button.
+     * Not going to be used.
+     * @throws SQLException
+     *************************************************************/
+    public static void saveUserIngredients() throws SQLException {
+        Connection connection = getConnection();
+        String sql;
+        PreparedStatement statement;
+        //User user = User.getUser();
+
+        for(String e: ChosenIngredients.getChosenIngredientNamesList()) {
+            System.out.println(e.toString());
+            sql = "INSERT INTO useringredient(userID, ingredientName) VALUES(?, ?)";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, User.id);
+            statement.setString(2, e);
+            statement.executeUpdate();
+        }
+    }
+
+    /*****************************************************
+     * Deletes a saved user ingredient
+     * @param ingredientName
+     * @throws SQLException
+     ****************************************************/
+    public static void deleteUserIngredient(String ingredientName) throws SQLException {
+
+        Connection connection = getConnection();
+        String sql;
+        PreparedStatement statement;
+
+
+        sql = "DELETE FROM useringredient WHERE ingredientName = ? AND userID = ?";
+        statement = connection.prepareStatement(sql);
+        statement.setString(1, ingredientName);
+        statement.setInt(2, User.id);
+        statement.executeUpdate();
+    }
+
+    /********************************************************
+     * Saves a user's ingredient
+     * @param ingredientName
+     * @throws SQLException
+     *******************************************************/
+    public static void saveUserIngredient(String ingredientName) throws SQLException {
+        Connection connection = getConnection();
+        String sql;
+        PreparedStatement statement;
+
+
+        sql = "INSERT INTO useringredient(userID, ingredientName) VALUES(?, ?)";
+        statement = connection.prepareStatement(sql);
+        statement.setInt(1, User.id);
+        statement.setString(2, ingredientName);
+        statement.executeUpdate();
+    }
+
+    /***********************************************
+     * Returns the correct user data
+     * @param userID
+     * @throws SQLException
+     **********************************************/
+    public static List<String> getSavedUserIngredientNamess(int userID) throws SQLException {
 
         Connection connection = getConnection();
         String sql;
         PreparedStatement statement;
 
         //get user who's username matches parameter
-        //sql = "SELECT username, "
+        sql = "SELECT ingredientName FROM useringredient WHERE userID = ?";
+        statement = connection.prepareStatement(sql);
+        statement.setInt(1, userID);
+        ResultSet resultSet = statement.executeQuery();
+
+        List<String> ingredientNames = new ArrayList<>();
+        String name;
+        List<Ingredient> ingredients = new ArrayList<>();
+
+
+        while (resultSet.next()){
+            name = resultSet.getString("ingredientName");
+            ingredientNames.add(name);
+        }
+        return ingredientNames;
     }
 
+    /***************************************************
+     * Gets user's saved ingredient list
+     * @param ingredientNames
+     * @return
+     * @throws SQLException
+     **************************************************/
+    public static List<Ingredient> getSavedUserIngredient(List<String> ingredientNames) throws SQLException {
+
+        Connection connection = getConnection();
+        String sql;
+        Statement statement;
+
+        StringBuilder nameQuery = new StringBuilder();
+        String name;
+        List<Ingredient> ingredients = new ArrayList<>();
+
+        if(ingredientNames.isEmpty()){
+            return ingredients;
+        }
+        else {
+            for (int i = 0; i < ingredientNames.size(); i++) {
+                name = ingredientNames.get(i);
+                nameQuery.append("nameI = '" + name + "'");
+                //if i isn't the last index
+                if (i != ingredientNames.size() - 1) {
+                    nameQuery.append(" OR ");
+                }
+            }
+            System.out.println(nameQuery.toString());
+            //get user who's username matches parameter
+            sql = "SELECT * FROM ingredient WHERE " + nameQuery.toString();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            int idI, idR;
+            String nameI, amount;
+            Ingredient.FoodCategory fc;
+
+            while (resultSet.next()) {
+                idI = resultSet.getInt("idI");
+                idR = resultSet.getInt("idR");
+                nameI = resultSet.getString("nameI");
+                amount = resultSet.getString("amount");
+                //Slightly convoluted way to retrieve enums from mySQL
+                fc = Ingredient.FoodCategory.valueOf(resultSet.getString("category"));
+
+                ingredients.add(new Ingredient(Integer.toString(idI), Integer.toString(idR), nameI, amount, fc));
+            }
+            return ingredients;
+        }
+    }
+
+    /*****************************************************************
+     * Registers a user in the database if one does not already exist.
+     * @param username
+     * @param password
+     * @throws SQLException
+     *****************************************************************/
     public static void registerUser(String username, String password) throws SQLException {
 
         Connection connection = getConnection();
@@ -45,18 +180,22 @@ public class MySQLConnector {
         statement.executeUpdate();
     }
 
-
+    /************************************************************
+     * Check if username and password input are correct keys
+     * @param u Data comes from usernameTextView
+     * @param p Data comes from passwordTextView
+     * @return resultSet  Contains all the data retrieved from DB
+     * @throws SQLException
+     * @throws LoginFailedException
+     ***********************************************************/
     public static ResultSet requestLogin(String u, String p) throws SQLException, LoginFailedException{
 
         Connection connection = getConnection();
-        System.out.println("here");
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
-        System.out.println("here2");
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, u);
         statement.setString(2, p);
         ResultSet resultSet = statement.executeQuery();
-        System.out.println("here3");
         if(!resultSet.next()){
             System.out.println("login failed");
             //Login failed. Throw exception
@@ -90,19 +229,20 @@ public class MySQLConnector {
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
 
-            int idR;
+            int idI, idR;
             String nameI;
             String amount;
             Ingredient.FoodCategory foodCategory;
             Ingredient ingredient;
             while (resultSet.next()){
+                idI = resultSet.getInt("idI");
                 idR = resultSet.getInt("idR");
                 nameI = resultSet.getString("nameI");
                 amount = resultSet.getString("amount");
                 //Slightly convoluted way to retrieve enums from mySQL
                 foodCategory = Ingredient.FoodCategory.valueOf(resultSet.getString("category"));
 
-                ingredient = new Ingredient(Integer.toString(idR), nameI, amount, foodCategory);
+                ingredient = new Ingredient(Integer.toString(idI), Integer.toString(idR), nameI, amount, foodCategory);
                 allIngredients.add(ingredient);
             }
         }
@@ -266,12 +406,13 @@ public class MySQLConnector {
             ResultSet resultSet = statement.executeQuery(sql);
 
             int count = 0;
-            int idR;
+            int idI, idR;
             String name;
             String amount;
             Ingredient.FoodCategory foodCategory;
             Ingredient ingredient;
             while (resultSet.next()){
+                idI = resultSet.getInt("idI");
                 idR = resultSet.getInt("idR");
                 name = resultSet.getString("nameI");
                 amount = resultSet.getString("amount");
@@ -279,7 +420,7 @@ public class MySQLConnector {
                 foodCategory = Ingredient.FoodCategory.valueOf(resultSet.getString("category"));
 
                 count++;
-                ingredient = new Ingredient(Integer.toString(idR), name, amount, foodCategory);
+                ingredient = new Ingredient(Integer.toString(idI), Integer.toString(idR), name, amount, foodCategory);
 //                System.out.println("Ingredient " + count + ": " + idR + ", " + name + ", " + amount);
 //                System.out.println("was added to allIngredients!");
                 allIngredients.add(ingredient);
@@ -288,6 +429,5 @@ public class MySQLConnector {
 
             return allIngredients;
     }
-
 
 }
